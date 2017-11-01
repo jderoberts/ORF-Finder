@@ -1,0 +1,45 @@
+NAME
+	orf_finder.py - locate ORFs in uploaded .fasta file(s) and return predicted protein sequences.
+
+SYNOPSIS
+	orf_finder.py [-h] [-n] [-v] [-s] [-o x] [-f x] [-m x] [-c x]
+                input [input ...]
+
+DESCRIPTION
+	orf_finder.py reads in sequence files in standard .fasta format, splits files into individual 
+	sequences and locates all open reading frames (ORFs) in each sequence.  Multiple .fasta files
+	can be specified, and each file can contain multiple sequences.  Each sequence is scanned for 
+	ORFs matching the pattern (start codon, x codons, stop codon).  Default behaviour is to only 
+	return ORFs between 150 and 2500nt in length, from all reading frames, containing no nonstandard
+	bases and with no overlapping ORFs.  This behaviour can be overridden using the appropriate 
+	optional flags, e.g. -f 123 if only ORFs on the forward strand are of interest.  Valid ORFs
+	are assigned a unique identifier and converted to a peptide sequence using the standard genetic
+	code; if nonstandard bases are permitted the resulting unknown codons will be marked 'X'.
+	All output in fasta format is returned to standard output by default; if a filename is specified 
+	the output will instead be written to file (e.g. -o output.fasta).
+	Summary information of number of sequences, total number of ORFs, ORFs per reading frame etc.
+	can be written to StdOut by using the -s flag.
+
+OPTIONS
+	Positional arguments:
+		input                input .fasta filename(s)
+
+	Optional arguments:
+		-h, --help           show this help message and exit
+		-n, --nonstandard    allow nonstandard bases (N) in ORFs
+		-v, --overlap        allow overlapping ORFs
+		-s, --summary        display summary information upon completion
+		-o x, --output x     name of output file (default StdOut)
+		-f x, --frames x     frames to check for ORFs (default 123456, 4-6 == rc1-3)
+		-m x, --minlength x  minimum length for detected ORFs (default 150nt)
+		-c x, --maxlength x  maximum length for detected ORFs (default 2500nt)
+
+EXAMPLES
+    Output all ORFs on reverse strand to file and return summary to stdout
+    ~$ python3 orf_finder.py -s -o output.fasta -f 456 input.fasta
+
+    Output all ORFs below 300nt in length to stdout including overlapping ORFs
+    ~$ python3 orf_finder.py --overlap --maxlength 300 input.fasta
+
+AUTHOR
+	James Roberts <james.roberts-6@postgrad.manchester.ac.uk>
